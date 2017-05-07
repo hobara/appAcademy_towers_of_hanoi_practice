@@ -41,4 +41,76 @@
 
 class TowersOfHanoi
 
+  def initialize
+    @towers = [[3,2,1], [], []]
+  end
+
+  def towers
+    @towers
+  end
+
+  def move(from, to)
+    towers[to] << towers[from].pop
+  end
+
+  def valid_move?(from, to)
+    return false if towers[from].empty?
+    if towers[to].empty?
+      return true
+    elsif towers[from].last > towers[to].last
+      return false
+    end
+    true
+  end
+
+  def won?
+    towers[1].length == 3 || towers[2].length == 3 ? true : false
+  end
+
+  def render
+    highest = towers.map(&:length).max
+    (highest - 1).downto(0).map do |height|
+      towers.map do |tower|
+        tower[height] || " "
+      end.join("\t")
+    end.join("\n")
+  end
+
+  def play
+    until won?
+      puts render
+      keep_play
+    end
+    puts "You Won! Congrats!"
+    puts render
+  end
+
+  def keep_play
+    print "Enter your move from to: "
+    input = gets.chomp
+    from, to = input.split(" ").map(&:to_i)
+    if valid_move?(from, to)
+      move(from, to)
+    else
+      invalid_operation
+    end
+  end
+
+  def invalid_operation
+    puts "Invalid move, try again!"
+    print "Enter your move from to: "
+    input = gets.chomp
+    from, to = input.split(" ").map(&:to_i)
+    if valid_move?(from, to)
+      move(from, to)
+    else
+      invalid_operation
+    end
+  end
+
 end
+
+# if __FILE__ == $PROGRAM_NAME
+#   t = TowersOfHanoi.new
+#   t.play
+# end
